@@ -1,17 +1,14 @@
 import utilities.custom_logger as cl
 import logging
 from traceback import print_stack
-from base.selenium_driver import SeleniumDriver
+from base.function_suite import FunctionSuite
 
 
-class Status(SeleniumDriver):
+class Status(FunctionSuite):
 
     log = cl.custom_logger(logging.INFO)
 
     def __init__(self, driver):
-        """
-        Inits CheckPoint class
-        """
         super(Status, self).__init__(driver)
         self.result_list = []
 
@@ -19,18 +16,18 @@ class Status(SeleniumDriver):
         try:
             if result is not None:
                 if result:
-                    self.result_list.append("PASS")
+                    self.result_list.append(True)
                     self.log.info("### VERIFICATION SUCCESSFUL :: + " + result_message)
                 else:
-                    self.result_list.append("FAIL")
+                    self.result_list.append(False)
                     self.log.error("### VERIFICATION FAILED :: + " + result_message)
                     self.screen_shot(result_message)
             else:
-                self.result_list.append("FAIL")
+                self.result_list.append(False)
                 self.log.error("### VERIFICATION FAILED :: + " + result_message)
                 self.screen_shot(result_message)
         except:
-            self.result_list.append("FAIL")
+            self.result_list.append(False)
             self.log.error("### Exception Occurred !!!")
             self.screen_shot(result_message)
             print_stack()
@@ -48,11 +45,11 @@ class Status(SeleniumDriver):
         """
         self.set_result(result, result_message)
 
-        if "FAIL" in self.result_list:
+        if False in self.result_list:
             self.log.error(test_name + " ### TEST FAILED")
             self.result_list.clear()
-            assert True == False
+            assert False
         else:
             self.log.info(test_name + " ### TEST SUCCESSFUL")
             self.result_list.clear()
-            assert True == True
+            assert True

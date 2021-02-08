@@ -1,4 +1,7 @@
+/automation.log
+/geckodriver.log
 venv/
 .idea/
 .pytest_cache/
 __pycache__/
+screenshots/

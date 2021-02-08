@@ -1,29 +1,25 @@
 import pytest
-from base.webdriver_factory import WebDriverFactory
+from base.webdriver_instance import WebDriverInstance
 from pages.home.login_page import LoginPage
-
-
-@pytest.yield_fixture()
-def set_up():
-    print("Running method level setUp")
-    yield
-    print("Running method level tearDown")
+from utilities.read_data import get_csv_data
 
 
 @pytest.yield_fixture(scope="class")
-def one_time_set_up(request, browser):
-    print("Running one time setUp")
-    web_driver = WebDriverFactory(browser)
-    driver = web_driver.get_webdriver_instance()
-    login_page = LoginPage(driver)
-    login_page.login("im_admin", "im_project")
+def run_app(browser):
+    print("Running application")
 
-    if request.cls is not None:
-        request.cls.driver = driver
+    web_driver = WebDriverInstance(browser)
+    driver = web_driver.get_webdriver_instance()
+
+    user_data = get_csv_data("login_test_valid_data.csv")
+    user_name = user_data[0][0]
+    user_password = user_data[0][1]
+
+    login_page = LoginPage(driver)
+    login_page.login(user_name, user_password)
 
     yield driver
     driver.quit()
-    print("Running one time tearDown")
 
 
 def pytest_addoption(parser):

@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from base.base_page import BasePage
 import utilities.custom_logger as cl
@@ -22,39 +23,39 @@ class SearchRecipePage(BasePage):
     def enter_recipe_name(self, name):
         self.element_send_keys(name, self._search_by_name_filed)
 
-    def select_ingredients(self, *args):
+    def select_ingredients(self, ingredients_list):
         select_box = self.get_element(self._select_box)
         sel = Select(select_box)
-        for item in args:
+        for item in ingredients_list:
             sel.select_by_visible_text(item)
 
     def click_search_button(self):
-        self.element_click(self._search_button, locator_type="xpath")
+        self.element_click(self._search_button, locator_type=By.XPATH)
 
     def search_recipe_by_name(self, string):
         self.clear_fields()
         self.enter_recipe_name(string)
         self.click_search_button()
 
-    def search_recipe_by_ingredients(self, *args):
+    def search_recipe_by_ingredients(self, ingredients_list):
         self.clear_fields()
-        self.select_ingredients(*args)
+        self.select_ingredients(ingredients_list)
         self.click_search_button()
 
     def verify_search_by_name_success(self, string):
-        recipe_cards = self.get_elements_list(self._recipe_cards, locator_type="class")
+        recipe_cards = self.get_elements_list(self._recipe_cards, locator_type=By.CLASS_NAME)
 
         return all(string in title.text for title in recipe_cards)
 
-    def verify_search_by_ingredients_success(self, *args):
-        recipes_ingredients_list = self.get_elements_list(self._ingredient_list, locator_type="class")
+    def verify_search_by_ingredients_success(self, ingredients_list):
+        recipes_ingredients_list = self.get_elements_list(self._ingredient_list, locator_type=By.CLASS_NAME)
         for ingredient_list in recipes_ingredients_list:
-            if not any(ingredient in ingredient_list.text for ingredient in args):
+            if not any(ingredient in ingredient_list.text for ingredient in ingredients_list):
                 return False
         return True
 
     def verify_recipe_not_found(self):
-        return self.element_present(self._text, locator_type="class")
+        return self.element_present(self._text, locator_type=By.CLASS_NAME)
 
     def clear_fields(self):
         field = self.get_element(locator=self._search_by_name_filed)

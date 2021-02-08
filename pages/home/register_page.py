@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from base.base_page import BasePage
 from pages.home.navigation_page import NavigationPage
 import utilities.custom_logger as cl
@@ -19,11 +20,12 @@ class RegisterPage(BasePage):
     _register_password_field_conf = "id_password2"
     _submit_button = "//button[@name='submit']"
     _register_link = "//a[@class='nav-link' and @href='/users/register/']"
+    _alert_register = "invalid-feedback"
     _logout_link = "Log out"
 
     def click_register_button(self):
-        if self.element_present(self._register_button, locator_type="xpath"):
-            self.element_click(self._register_button, locator_type="xpath")
+        if self.element_present(self._register_button, locator_type=By.XPATH):
+            self.element_click(self._register_button, locator_type=By.XPATH)
 
     def enter_username_field(self, username):
         self.element_send_keys(username, self._username_field)
@@ -33,7 +35,7 @@ class RegisterPage(BasePage):
         self.element_send_keys(password_conf, self._register_password_field_conf)
 
     def click_submit_button(self):
-        self.element_click(self._submit_button, locator_type="xpath")
+        self.element_click(self._submit_button, locator_type=By.XPATH)
 
     def register(self, username="", password="", password_conf=""):
         self.click_register_button()
@@ -51,16 +53,21 @@ class RegisterPage(BasePage):
         password_field_conf.clear()
 
     def verify_register_success(self, username):
-        result = self.element_present(f"//span[contains(text(), 'Hello, {username}')]", locator_type="xpath")
+        result = self.element_present(f"//span[contains(text(), 'Hello, {username}')]", locator_type=By.XPATH)
         return result
 
-    def verify_register_failed(self):
-        result = self.element_present(self._register_link, locator_type="xpath")
+    def verify_invalid_data_register_failed(self):
+        result = self.element_present(self._alert_register, locator_type=By.CLASS_NAME)
         return result
 
-    def verify_register_title(self):
+    def verify_empty_data_register_failed(self):
+        result = self.element_present(self._register_link, locator_type=By.XPATH)
+        return result
+
+    def verify_displayed_page_title(self):
         return self.verify_page_title("Cooking Manager")
 
     def logout(self):
-        self.element_click(locator=self._logout_link, locator_type="link")
+        if self.element_present(locator=self._logout_link, locator_type=By.LINK_TEXT):
+            self.element_click(locator=self._logout_link, locator_type=By.LINK_TEXT)
         self.navigation_page.navigate_to_main_page()

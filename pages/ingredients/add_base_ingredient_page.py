@@ -1,6 +1,8 @@
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from base.base_page import BasePage
 import utilities.custom_logger as cl
+from utilities.util import Util
 
 
 class AddBaseIngredientPage(BasePage):
@@ -10,6 +12,7 @@ class AddBaseIngredientPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
+        self.utility = Util()
 
     # Locators
     _add_ingredient_button = "//a[@href='/add_ingredient/']"
@@ -17,11 +20,12 @@ class AddBaseIngredientPage(BasePage):
     _unit_field = "id_unit"
     _category_field = "id_category"
     _add_button = "//button[@name='submit']"
-    _page_header = "page-header"
+    _add_page_header = "page-header"
+    _keep_track_page_header = "//h2[@class='text-center my-3']"
 
     def click_add_ingredient_button(self):
-        if self.element_present(self._add_ingredient_button, locator_type="xpath"):
-            self.element_click(self._add_ingredient_button, locator_type="xpath")
+        if self.element_present(self._add_ingredient_button, locator_type=By.XPATH):
+            self.element_click(self._add_ingredient_button, locator_type=By.XPATH)
 
     def enter_name_field(self, name):
         self.element_send_keys(name, self._name_field)
@@ -35,7 +39,7 @@ class AddBaseIngredientPage(BasePage):
             sel.select_by_index(item)
 
     def click_add_button(self):
-        self.element_click(self._add_button, locator_type="xpath")
+        self.element_click(self._add_button, locator_type=By.XPATH)
 
     def add_base_ingredient(self, name='', unit='', category=''):
         self.click_add_ingredient_button()
@@ -47,16 +51,17 @@ class AddBaseIngredientPage(BasePage):
 
     def verify_add_base_ingredient_success(self, name):
         element = self.get_element(f"//table//td[2][contains(text(),'{name}')]",
-                                   locator_type="xpath")
+                                   locator_type=By.XPATH)
         result = self.element_present(element=element)
         return result
 
     def verify_add_base_ingredient_failed(self):
-        result = self.element_present(self._page_header, locator_type='class')
-        return result
+        page_header_text = self.get_element_text(self._add_page_header, locator_type=By.CLASS_NAME)
+        return self.utility.verify_text_contains(page_header_text, "Add ingredient")
 
-    def verify_keep_track_page(self, header):
-        return self.element_present(f"//h2[contains(text(), '{header}')]", locator_type="xpath")
+    def verify_keep_track_page(self):
+        page_header_text = self.get_element_text(self._keep_track_page_header, locator_type=By.XPATH)
+        return self.utility.verify_text_contains(page_header_text, "If you want to know what ingredients you have")
 
     def clear_fields(self):
         name_field = self.get_element(locator=self._name_field)

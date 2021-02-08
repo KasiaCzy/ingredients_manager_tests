@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from base.base_page import BasePage
 from pages.home.navigation_page import NavigationPage
 import utilities.custom_logger as cl
@@ -19,10 +20,11 @@ class LoginPage(BasePage):
     _submit_button = "//button[@name='submit']"
     _login_link = "//a[@class='nav-link' and @href='/users/login/']"
     _logout_link = "Log out"
+    _alert_login = "alert"
 
     def click_login_button(self):
-        if self.element_present(self._login_button, locator_type="xpath"):
-            self.element_click(self._login_button, locator_type="xpath")
+        if self.element_present(self._login_button, locator_type=By.XPATH):
+            self.element_click(self._login_button, locator_type=By.XPATH)
 
     def enter_username_field(self, username):
         self.element_send_keys(username, self._username_field)
@@ -31,7 +33,7 @@ class LoginPage(BasePage):
         self.element_send_keys(password, self._login_password_field)
 
     def click_submit_button(self):
-        self.element_click(self._submit_button, locator_type="xpath")
+        self.element_click(self._submit_button, locator_type=By.XPATH)
 
     def login(self, username="", password=""):
         self.click_login_button()
@@ -41,14 +43,18 @@ class LoginPage(BasePage):
         self.click_submit_button()
 
     def verify_login_success(self, username):
-        result = self.element_present(f"//span[contains(text(), 'Hello, {username}')]", locator_type="xpath")
+        result = self.element_present(f"//span[contains(text(), 'Hello, {username}')]", locator_type=By.XPATH)
         return result
 
-    def verify_login_failed(self):
-        result = self.element_present(self._login_link, locator_type="xpath")
+    def verify_invalid_data_login_failed(self):
+        result = self.element_present(self._alert_login, locator_type=By.CLASS_NAME)
         return result
 
-    def verify_login_title(self):
+    def verify_empty_data_login_failed(self):
+        result = self.element_present(self._login_link, locator_type=By.XPATH)
+        return result
+
+    def verify_logged_page_title(self):
         return self.verify_page_title("Cooking Manager")
 
     def clear_fields(self):
@@ -58,5 +64,6 @@ class LoginPage(BasePage):
         password_field.clear()
 
     def logout(self):
-        self.element_click(locator=self._logout_link, locator_type="link")
+        if self.element_present(locator=self._logout_link, locator_type=By.LINK_TEXT):
+            self.element_click(locator=self._logout_link, locator_type=By.LINK_TEXT)
         self.navigation_page.navigate_to_main_page()

@@ -1,37 +1,40 @@
 from pages.home.login_page import LoginPage
 from utilities.test_status import Status
-import unittest
 import pytest
-from ddt import ddt, data, unpack
 from utilities.read_data import get_csv_data
 
 
-@pytest.mark.usefixtures("one_time_set_up", "set_up")
-@ddt
-class LoginTest(unittest.TestCase):
+@pytest.mark.usefixtures("run_app")
+class TestLogin:
 
     @pytest.fixture(autouse=True)
-    def class_set_up(self, one_time_set_up):
+    def class_set_up(self, run_app):
+        self.driver = run_app
         self.login_page = LoginPage(self.driver)
         self.test_status = Status(self.driver)
 
-    @pytest.mark.run(order=2)
-    @data(*get_csv_data("login_test_valid_data.csv"))
-    @unpack
-    def test_valid_login(self, user_name, user_password):
-        # self.lp.logout()
+    @pytest.fixture()
+    def log_out(self):
+        self.login_page.logout()
+
+    @pytest.mark.run(order=3)
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_valid_data.csv"))
+    def test_valid_login(self, user_name, user_password, log_out):
         self.login_page.login(user_name, user_password)
-        result1 = self.login_page.verify_login_title()
-        self.test_status.mark(result1, "Title Verified")
-        result2 = self.login_page.verify_login_success(user_name)
-        self.test_status.mark_final("test_valid_login", result2, "Login was successful")
+        self.test_status.mark(self.login_page.verify_logged_page_title(), "Title Verified")
+        result = self.login_page.verify_login_success(user_name)
+        self.test_status.mark_final("test_valid_login", result, "Login was successful")
 
     @pytest.mark.run(order=1)
-    @data(*get_csv_data("login_test_invalid_data.csv"))
-    @unpack
-    def test_invalid_login(self, user_name, user_password):
-        self.login_page.logout()
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_invalid_data.csv"))
+    def test_invalid_login_data(self, user_name, user_password, log_out):
         self.login_page.login(user_name, user_password)
-        result = self.login_page.verify_login_failed()
-        self.test_status.mark_final("test_invalid_login", result, "Login failed")
-        # assert result == True
+        result = self.login_page.verify_invalid_data_login_failed()
+        self.test_status.mark_final("test_invalid_login_data", result, "Login failed")
+
+    @pytest.mark.run(order=2)
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_empty_data.csv"))
+    def test_empty_login_data(self, user_name, user_password, log_out):
+        self.login_page.login(user_name, user_password)
+        result = self.login_page.verify_empty_data_login_failed()
+        self.test_status.mark_final("test_empty_login_data", result, "Login failed")

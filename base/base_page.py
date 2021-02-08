@@ -1,9 +1,9 @@
-from base.selenium_driver import SeleniumDriver
+from base.function_suite import FunctionSuite
 from traceback import print_stack
 from utilities.util import Util
 
 
-class BasePage(SeleniumDriver):
+class BasePage(FunctionSuite):
 
     def __init__(self, driver):
         super(BasePage, self).__init__(driver)

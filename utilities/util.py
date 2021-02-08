@@ -1,14 +1,8 @@
-"""
-All most commonly used utilities should be implemented in this class
-"""
-import time
-import traceback
-import random, string
 import utilities.custom_logger as cl
 import logging
 
 
-class Util(object):
+class Util:
 
     log = cl.custom_logger(logging.INFO)
 
@@ -19,8 +13,8 @@ class Util(object):
         self.log.info("Actual Text From Application Web UI --> :: " + actual_text)
         self.log.info("Expected Text From Application Web UI --> :: " + expected_text)
         if expected_text.lower() in actual_text.lower():
-            self.log.info("### VERIFICATION CONTAINS !!!")
+            self.log.info("### VERIFICATION SUCCESS")
             return True
         else:
-            self.log.info("### VERIFICATION DOES NOT CONTAINS !!!")
+            self.log.info("### VERIFICATION FAILED")
             return False
