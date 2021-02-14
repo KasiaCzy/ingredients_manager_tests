@@ -8,7 +8,7 @@ import time
 import os
 
 
-class FunctionSuite:
+class SeleniumDriverWrapper:
 
     log = cl.custom_logger()
 

@@ -1,10 +1,10 @@
 import utilities.custom_logger as cl
 import logging
 from traceback import print_stack
-from base.function_suite import FunctionSuite
+from base.function_suite import SeleniumDriverWrapper
 
 
-class Status(FunctionSuite):
+class Status(SeleniumDriverWrapper):
 
     log = cl.custom_logger(logging.INFO)
 
@@ -52,4 +52,3 @@ class Status(FunctionSuite):
         else:
             self.log.info(test_name + " ### TEST SUCCESSFUL")
             self.result_list.clear()
-            assert True

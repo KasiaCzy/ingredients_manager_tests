@@ -6,7 +6,7 @@ import time
 from utilities.read_data import get_csv_data
 
 
-@pytest.mark.usefixtures("run_app")
+@pytest.mark.usefixtures("run_app", "navigate_page")
 class TestAddBaseIngredient:
 
     @pytest.fixture(autouse=True)
@@ -22,8 +22,8 @@ class TestAddBaseIngredient:
 
     @pytest.mark.run(order=2)
     @pytest.mark.parametrize("name,unit,category", get_csv_data("add_base_ingredient_valid_data.csv"))
-    def test_valid_add_base_ingredient(self, name, unit, category, navigate_page):
-        unique_name = name+str(round(time.time()*100))
+    def test_valid_add_base_ingredient(self, name, unit, category):
+        unique_name = name + str(round(time.time()*100))
         self.ingredient_page.add_base_ingredient(unique_name, unit, category)
         self.test_status.mark(self.ingredient_page.verify_keep_track_page(), "Page Header Verified")
         result = self.ingredient_page.verify_add_base_ingredient_success(unique_name)
@@ -31,7 +31,7 @@ class TestAddBaseIngredient:
 
     @pytest.mark.run(order=1)
     @pytest.mark.parametrize("name,unit,category", get_csv_data("add_base_ingredient_invalid_data.csv"))
-    def test_invalid_add_base_ingredient(self, name, unit, category, navigate_page):
+    def test_invalid_add_base_ingredient(self, name, unit, category):
         self.ingredient_page.add_base_ingredient(name, unit, category)
         result = self.ingredient_page.verify_add_base_ingredient_failed()
         self.test_status.mark_final("test_invalid_add_base_ingredient", result, "Add base ingredient failed")

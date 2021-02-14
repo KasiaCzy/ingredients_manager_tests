@@ -1,2 +1,3 @@
-InvalidUserName;InvalidUserPassword
-user;1234
+UserName;UserPassword
+test_user;1234
+user;123test

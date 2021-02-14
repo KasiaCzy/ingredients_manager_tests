@@ -5,7 +5,7 @@ from utilities.read_data import get_csv_data
 import pytest
 
 
-@pytest.mark.usefixtures("run_app")
+@pytest.mark.usefixtures("run_app", "navigate_page")
 class TestSearchRecipe:
 
     @pytest.fixture(autouse=True)
@@ -21,14 +21,14 @@ class TestSearchRecipe:
 
     @pytest.mark.run(order=2)
     @pytest.mark.parametrize("name", get_csv_data("recipe_found_by_name_data.csv"))
-    def test_recipe_found_by_name(self, name, navigate_page):
+    def test_recipe_found_by_name(self, name):
         self.recipe_page.search_recipe_by_name(name)
         result = self.recipe_page.verify_search_by_name_success(name)
         self.test_status.mark_final("test_recipe_found_by_name", result, "Searching recipe by name was successful")
 
     @pytest.mark.run(order=1)
     @pytest.mark.parametrize("name", get_csv_data("recipe_not_found_by_name_data.csv"))
-    def test_recipe_not_found_by_name(self, name, navigate_page):
+    def test_recipe_not_found_by_name(self, name):
         self.recipe_page.search_recipe_by_name(name)
         result = self.recipe_page.verify_recipe_not_found()
         self.test_status.mark_final("test_recipe_not_found_by_name", result,
@@ -36,7 +36,7 @@ class TestSearchRecipe:
 
     @pytest.mark.run(order=3)
     @pytest.mark.parametrize("ingredients", get_csv_data("recipe_found_by_ingredients_data.csv"))
-    def test_recipe_found_by_ingredients(self, ingredients, navigate_page):
+    def test_recipe_found_by_ingredients(self, ingredients):
         self.recipe_page.search_recipe_by_ingredients(ingredients)
         result = self.recipe_page.verify_search_by_ingredients_success(ingredients)
         self.test_status.mark_final("test_recipe_found_by_ingredients", result,
