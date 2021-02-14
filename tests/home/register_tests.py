@@ -19,7 +19,8 @@ class TestRegister:
         self.register_page.logout()
 
     @pytest.mark.run(order=3)
-    @pytest.mark.parametrize("user_name,user_password,conf_password", get_csv_data("registration_test_valid_data.csv"))
+    @pytest.mark.parametrize("user_name,user_password,conf_password",
+                             get_csv_data("data/registration_test_valid_data.csv"))
     def test_valid_registration(self, user_name, user_password, conf_password):
         unique_user_name = user_name + str(round(time.time()*100))
         self.register_page.register(unique_user_name, user_password, conf_password)
@@ -29,7 +30,7 @@ class TestRegister:
 
     @pytest.mark.run(order=2)
     @pytest.mark.parametrize("user_name,user_password,conf_password",
-                             get_csv_data("registration_test_invalid_data.csv"))
+                             get_csv_data("data/registration_test_invalid_data.csv"))
     def test_invalid_registration_data(self, user_name, user_password, conf_password):
         self.register_page.register(user_name, user_password, conf_password)
         result = self.register_page.verify_invalid_data_register_failed()
@@ -37,7 +38,7 @@ class TestRegister:
 
     @pytest.mark.run(order=1)
     @pytest.mark.parametrize("user_name,user_password,conf_password",
-                             get_csv_data("registration_test_empty_data.csv"))
+                             get_csv_data("data/registration_test_empty_data.csv"))
     def test_empty_registration_data(self, user_name, user_password, conf_password):
         self.register_page.register(user_name, user_password, conf_password)
         result = self.register_page.verify_empty_data_register_failed()

@@ -21,7 +21,7 @@ class TestAddBaseIngredient:
         self.navigation_page.navigate_to_keep_track()
 
     @pytest.mark.run(order=2)
-    @pytest.mark.parametrize("name,unit,category", get_csv_data("add_base_ingredient_valid_data.csv"))
+    @pytest.mark.parametrize("name,unit,category", get_csv_data("data/add_base_ingredient_valid_data.csv"))
     def test_valid_add_base_ingredient(self, name, unit, category):
         unique_name = name + str(round(time.time()*100))
         self.ingredient_page.add_base_ingredient(unique_name, unit, category)
@@ -30,7 +30,7 @@ class TestAddBaseIngredient:
         self.test_status.mark_final("test_valid_add_base_ingredient", result, "Add base ingredient was successful")
 
     @pytest.mark.run(order=1)
-    @pytest.mark.parametrize("name,unit,category", get_csv_data("add_base_ingredient_invalid_data.csv"))
+    @pytest.mark.parametrize("name,unit,category", get_csv_data("data/add_base_ingredient_invalid_data.csv"))
     def test_invalid_add_base_ingredient(self, name, unit, category):
         self.ingredient_page.add_base_ingredient(name, unit, category)
         result = self.ingredient_page.verify_add_base_ingredient_failed()

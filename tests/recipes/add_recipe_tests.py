@@ -21,7 +21,7 @@ class TestAddRecipe:
         self.navigation_page.navigate_to_recipes()
 
     @pytest.mark.run(order=2)
-    @pytest.mark.parametrize("title,link,ingredients", get_csv_data("add_recipe_valid_data.csv"))
+    @pytest.mark.parametrize("title,link,ingredients", get_csv_data("data/add_recipe_valid_data.csv"))
     def test_valid_add_recipe(self, title, link, ingredients):
         unique_title = title + str(round(time.time()*100))
         self.recipe_page.add_recipe(unique_title, link, ingredients)
@@ -30,7 +30,7 @@ class TestAddRecipe:
         self.test_status.mark_final("test_valid_add_recipe", result, "Add recipe was successful")
 
     @pytest.mark.run(order=1)
-    @pytest.mark.parametrize("title,link,ingredients", get_csv_data("add_recipe_invalid_data.csv"))
+    @pytest.mark.parametrize("title,link,ingredients", get_csv_data("data/add_recipe_invalid_data.csv"))
     def test_invalid_add_recipe(self, title, link, ingredients):
         self.recipe_page.add_recipe(title, link, ingredients)
         result = self.recipe_page.verify_add_recipe_failed()

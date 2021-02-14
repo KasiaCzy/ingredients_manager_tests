@@ -18,7 +18,7 @@ class TestLogin:
         self.login_page.logout()
 
     @pytest.mark.run(order=3)
-    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_valid_data.csv"))
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("data/login_test_valid_data.csv"))
     def test_valid_login(self, user_name, user_password):
         self.login_page.login(user_name, user_password)
         self.test_status.mark(self.login_page.verify_logged_page_title(), "Title Verified")
@@ -26,14 +26,14 @@ class TestLogin:
         self.test_status.mark_final("test_valid_login", result, "Login was successful")
 
     @pytest.mark.run(order=1)
-    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_invalid_data.csv"))
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("data/login_test_invalid_data.csv"))
     def test_invalid_login_data(self, user_name, user_password):
         self.login_page.login(user_name, user_password)
         result = self.login_page.verify_invalid_data_login_failed()
         self.test_status.mark_final("test_invalid_login_data", result, "Login failed")
 
     @pytest.mark.run(order=2)
-    @pytest.mark.parametrize("user_name,user_password", get_csv_data("login_test_empty_data.csv"))
+    @pytest.mark.parametrize("user_name,user_password", get_csv_data("data/login_test_empty_data.csv"))
     def test_empty_login_data(self, user_name, user_password):
         self.login_page.login(user_name, user_password)
         result = self.login_page.verify_empty_data_login_failed()

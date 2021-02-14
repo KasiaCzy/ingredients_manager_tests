@@ -11,7 +11,7 @@ def run_app(browser):
     web_driver = WebDriverInstance(browser)
     driver = web_driver.get_webdriver_instance()
 
-    user_data = get_csv_data("login_test_valid_data.csv")
+    user_data = get_csv_data("data/login_test_valid_data.csv")
     user_name = user_data[0][0]
     user_password = user_data[0][1]
 
